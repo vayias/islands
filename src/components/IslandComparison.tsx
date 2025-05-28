@@ -24,116 +24,21 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-
-interface Island {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  attributes: {
-    beaches: number;
-    nightlife: number;
-    familyFriendly: number;
-    nature: number;
-    food: number;
-    culture: number;
-    accessibility: number;
-    cost: number;
-  };
-  activities: string[];
-  bestTimeToVisit: string[];
-  accommodationTypes: string[];
-}
+import { Island } from "./IslandGrid";
+import Itinerary from "./Itinerary";
 
 interface IslandComparisonProps {
   islands?: Island[];
   onRemoveIsland?: (id: string) => void;
-  onViewDetails?: (id: string) => void;
-  onBookAccommodation?: (id: string) => void;
-  onStartNewSearch?: () => void;
+  onViewDetails?: (island: Island) => void;
 }
 
-const IslandComparison = ({
-  islands = [
-    {
-      id: "1",
-      name: "Naxos",
-      image:
-        "https://images.unsplash.com/photo-1586861256632-52a3db1073ee?w=800&q=80",
-      description:
-        "The largest of the Cyclades islands, known for its stunning beaches and mountain villages.",
-      attributes: {
-        beaches: 5,
-        nightlife: 3,
-        familyFriendly: 5,
-        nature: 4,
-        food: 4,
-        culture: 4,
-        accessibility: 3,
-        cost: 3,
-      },
-      activities: [
-        "Hiking",
-        "Windsurfing",
-        "Historical Sites",
-        "Beach Relaxation",
-      ],
-      bestTimeToVisit: ["May", "June", "September"],
-      accommodationTypes: ["Hotels", "Villas", "Apartments"],
-    },
-    {
-      id: "2",
-      name: "Milos",
-      image:
-        "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800&q=80",
-      description:
-        "Known for its stunning lunar landscapes and colorful fishing villages.",
-      attributes: {
-        beaches: 5,
-        nightlife: 2,
-        familyFriendly: 4,
-        nature: 5,
-        food: 4,
-        culture: 3,
-        accessibility: 2,
-        cost: 3,
-      },
-      activities: ["Swimming", "Boat Tours", "Photography", "Exploring Caves"],
-      bestTimeToVisit: ["June", "July", "September"],
-      accommodationTypes: ["Boutique Hotels", "Guesthouses", "Apartments"],
-    },
-    {
-      id: "3",
-      name: "Folegandros",
-      image:
-        "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?w=800&q=80",
-      description:
-        "A quiet island with dramatic cliffs and an authentic Greek atmosphere.",
-      attributes: {
-        beaches: 3,
-        nightlife: 2,
-        familyFriendly: 3,
-        nature: 5,
-        food: 4,
-        culture: 4,
-        accessibility: 2,
-        cost: 4,
-      },
-      activities: [
-        "Hiking",
-        "Cliff Diving",
-        "Traditional Cuisine",
-        "Stargazing",
-      ],
-      bestTimeToVisit: ["May", "June", "September", "October"],
-      accommodationTypes: ["Small Hotels", "Traditional Houses"],
-    },
-  ],
+const IslandComparison: React.FC<IslandComparisonProps> = ({
+  islands = [],
   onRemoveIsland = () => {},
   onViewDetails = () => {},
-  onBookAccommodation = () => {},
-  onStartNewSearch = () => {},
-}: IslandComparisonProps) => {
+}) => {
+  const [showItinerary, setShowItinerary] = useState(false);
   const [hoveredAttribute, setHoveredAttribute] = useState<string | null>(null);
 
   const attributeDescriptions: Record<string, string> = {
@@ -167,16 +72,39 @@ const IslandComparison = ({
         <p className="mb-6">
           Add islands to your comparison list to see them side by side.
         </p>
-        <Button onClick={onStartNewSearch}>Start Island Search</Button>
+        <Button onClick={() => {}}>Start Island Search</Button>
+      </div>
+    );
+  }
+
+  if (showItinerary) {
+    return (
+      <div className="w-full">
+        <Button
+          variant="outline"
+          onClick={() => setShowItinerary(false)}
+          className="mb-4"
+        >
+          ← Back to Comparison
+        </Button>
+        <Itinerary
+          selectedIslands={islands}
+          startDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
+          endDate={new Date(Date.now() + 37 * 24 * 60 * 60 * 1000)}
+          travelers={2}
+        />
       </div>
     );
   }
 
   return (
     <div className="bg-white p-4 md:p-8 rounded-xl shadow-md w-full max-w-7xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center text-blue-900">
-        Island Comparison
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-blue-900">
+          Island Comparison
+        </h2>
+        <Button onClick={() => setShowItinerary(true)}>Plan Itinerary</Button>
+      </div>
 
       {/* Island Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -184,7 +112,7 @@ const IslandComparison = ({
           <Card key={island.id} className="overflow-hidden h-full">
             <div className="relative h-48 overflow-hidden">
               <img
-                src={island.image}
+                src={island.imageUrl}
                 alt={island.name}
                 className="w-full h-full object-cover"
               />
@@ -205,13 +133,11 @@ const IslandComparison = ({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onViewDetails(island.id)}
+                onClick={() => onViewDetails(island)}
               >
                 View Details
               </Button>
-              <Button size="sm" onClick={() => onBookAccommodation(island.id)}>
-                Book Now
-              </Button>
+              <Button size="sm">Book Now</Button>
             </CardFooter>
           </Card>
         ))}
@@ -246,66 +172,27 @@ const IslandComparison = ({
                   </TableCell>
                   {islands.map((island) => (
                     <TableCell key={`${island.id}-${key}`}>
-                      {renderRating(
-                        island.attributes[
-                          key as keyof typeof island.attributes
-                        ],
-                      )}
+                      {typeof island.attributes[
+                        key as keyof typeof island.attributes
+                      ] === "number"
+                        ? renderRating(
+                            island.attributes[
+                              key as keyof typeof island.attributes
+                            ] as number,
+                          )
+                        : island.attributes[
+                              key as keyof typeof island.attributes
+                            ]
+                          ? "Yes"
+                          : "No"}
                     </TableCell>
                   ))}
                 </TableRow>
               ))}
-
-              {/* Activities */}
-              <TableRow>
-                <TableCell className="font-medium">Activities</TableCell>
-                {islands.map((island) => (
-                  <TableCell key={`${island.id}-activities`}>
-                    <div className="flex flex-wrap gap-1">
-                      {island.activities.map((activity) => (
-                        <span
-                          key={activity}
-                          className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full"
-                        >
-                          {activity}
-                        </span>
-                      ))}
-                    </div>
-                  </TableCell>
-                ))}
-              </TableRow>
-
-              {/* Best Time to Visit */}
-              <TableRow>
-                <TableCell className="font-medium">
-                  Best Time to Visit
-                </TableCell>
-                {islands.map((island) => (
-                  <TableCell key={`${island.id}-time`}>
-                    {island.bestTimeToVisit.join(", ")}
-                  </TableCell>
-                ))}
-              </TableRow>
-
-              {/* Accommodation Types */}
-              <TableRow>
-                <TableCell className="font-medium">Accommodation</TableCell>
-                {islands.map((island) => (
-                  <TableCell key={`${island.id}-accommodation`}>
-                    {island.accommodationTypes.join(", ")}
-                  </TableCell>
-                ))}
-              </TableRow>
             </TableBody>
           </Table>
         </div>
       </TooltipProvider>
-
-      <div className="mt-8 text-center">
-        <Button onClick={onStartNewSearch} variant="outline">
-          Start New Search
-        </Button>
-      </div>
     </div>
   );
 };

@@ -52,6 +52,23 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        island: {
+          blue: "#0891B2",
+          teal: "#0D9488",
+          cyan: "#06B6D4",
+          sky: "#0EA5E9",
+          indigo: "#6366F1",
+          violet: "#8B5CF6",
+        },
+      },
+      boxShadow: {
+        soft: "0 4px 20px rgba(0, 0, 0, 0.08)",
+        glow: "0 0 15px rgba(6, 182, 212, 0.5)",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "island-gradient": "linear-gradient(to right, #0891B2, #0EA5E9)",
+        "island-gradient-hover": "linear-gradient(to right, #0D9488, #0891B2)",
       },
       borderRadius: {
         lg: "var(--radius)",

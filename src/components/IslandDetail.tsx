@@ -153,7 +153,7 @@ const IslandDetail = ({ island }: IslandDetailProps) => {
       euros.push(
         <Euro
           key={i}
-          className={`h-4 w-4 ${i < level ? "text-green-600" : "text-gray-300"}`}
+          className={`h-4 w-4 ${i < level ? "text-island-teal" : "text-gray-300"}`}
         />,
       );
     }
@@ -165,7 +165,7 @@ const IslandDetail = ({ island }: IslandDetailProps) => {
     return (
       <div className="w-full bg-gray-200 rounded-full h-2">
         <div
-          className="bg-blue-500 h-2 rounded-full"
+          className="bg-island-blue h-2 rounded-full"
           style={{ width: `${(value / 5) * 100}%` }}
         ></div>
       </div>
@@ -179,17 +179,28 @@ const IslandDetail = ({ island }: IslandDetailProps) => {
         <div className="w-full md:w-2/3">
           <Carousel className="w-full">
             <CarouselContent>
-              {displayIsland.images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <AspectRatio ratio={16 / 9} className="bg-muted">
-                    <img
-                      src={image}
-                      alt={`${displayIsland.name} - Image ${index + 1}`}
-                      className="object-cover w-full h-full rounded-lg"
-                    />
+              {displayIsland.images && displayIsland.images.length > 0 ? (
+                displayIsland.images.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <AspectRatio ratio={16 / 9} className="bg-muted">
+                      <img
+                        src={image}
+                        alt={`${displayIsland.name} - Image ${index + 1}`}
+                        className="object-cover w-full h-full rounded-lg"
+                      />
+                    </AspectRatio>
+                  </CarouselItem>
+                ))
+              ) : (
+                <CarouselItem>
+                  <AspectRatio
+                    ratio={16 / 9}
+                    className="bg-muted flex items-center justify-center"
+                  >
+                    <p className="text-gray-500">No images available</p>
                   </AspectRatio>
                 </CarouselItem>
-              ))}
+              )}
             </CarouselContent>
             <CarouselPrevious className="left-2" />
             <CarouselNext className="right-2" />
@@ -310,72 +321,94 @@ const IslandDetail = ({ island }: IslandDetailProps) => {
                   Activities on {displayIsland.name}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {displayIsland.activities.map((activity, index) => (
-                    <Card key={index}>
-                      <CardContent className="p-4 flex items-center">
-                        <div className="bg-blue-100 p-2 rounded-full mr-3">
-                          {activity.includes("Swimming") ||
-                          activity.includes("Beach") ? (
-                            <Waves className="h-5 w-5 text-blue-600" />
-                          ) : activity.includes("Hiking") ||
-                            activity.includes("Nature") ? (
-                            <Tent className="h-5 w-5 text-green-600" />
-                          ) : activity.includes("Sailing") ||
-                            activity.includes("Boat") ? (
-                            <Sailboat className="h-5 w-5 text-blue-600" />
-                          ) : activity.includes("Food") ||
-                            activity.includes("Cuisine") ? (
-                            <Utensils className="h-5 w-5 text-orange-600" />
-                          ) : (
-                            <Star className="h-5 w-5 text-yellow-600" />
-                          )}
-                        </div>
-                        <span>{activity}</span>
+                  {displayIsland.activities &&
+                  displayIsland.activities.length > 0 ? (
+                    displayIsland.activities.map((activity, index) => (
+                      <Card key={index}>
+                        <CardContent className="p-4 flex items-center">
+                          <div className="bg-sky-100 p-2 rounded-full mr-3">
+                            {activity.includes("Swimming") ||
+                            activity.includes("Beach") ? (
+                              <Waves className="h-5 w-5 text-island-blue" />
+                            ) : activity.includes("Hiking") ||
+                              activity.includes("Nature") ? (
+                              <Tent className="h-5 w-5 text-island-teal" />
+                            ) : activity.includes("Sailing") ||
+                              activity.includes("Boat") ? (
+                              <Sailboat className="h-5 w-5 text-island-blue" />
+                            ) : activity.includes("Food") ||
+                              activity.includes("Cuisine") ? (
+                              <Utensils className="h-5 w-5 text-orange-600" />
+                            ) : (
+                              <Star className="h-5 w-5 text-yellow-600" />
+                            )}
+                          </div>
+                          <span>{activity}</span>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <Card>
+                      <CardContent className="p-4 flex items-center justify-center">
+                        <p className="text-gray-500">No activities available</p>
                       </CardContent>
                     </Card>
-                  ))}
+                  )}
                 </div>
               </TabsContent>
 
               <TabsContent value="accommodations" className="space-y-4">
                 <h2 className="text-xl font-semibold mb-2">Where to Stay</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {displayIsland.accommodations.map((accommodation) => (
-                    <Card key={accommodation.id} className="overflow-hidden">
-                      <div className="h-48 overflow-hidden">
-                        <img
-                          src={accommodation.image}
-                          alt={accommodation.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <CardHeader className="p-4 pb-0">
-                        <CardTitle className="text-lg">
-                          {accommodation.name}
-                        </CardTitle>
-                        <CardDescription>{accommodation.type}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-2">
-                        <p className="font-bold text-lg">
-                          €{accommodation.price}{" "}
-                          <span className="text-sm font-normal text-gray-500">
-                            per night
-                          </span>
+                  {displayIsland.accommodations &&
+                  displayIsland.accommodations.length > 0 ? (
+                    displayIsland.accommodations.map((accommodation) => (
+                      <Card key={accommodation.id} className="overflow-hidden">
+                        <div className="h-48 overflow-hidden">
+                          <img
+                            src={accommodation.image}
+                            alt={accommodation.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <CardHeader className="p-4 pb-0">
+                          <CardTitle className="text-lg">
+                            {accommodation.name}
+                          </CardTitle>
+                          <CardDescription>
+                            {accommodation.type}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-4 pt-2">
+                          <p className="font-bold text-lg">
+                            €{accommodation.price}{" "}
+                            <span className="text-sm font-normal text-gray-500">
+                              per night
+                            </span>
+                          </p>
+                        </CardContent>
+                        <CardFooter className="p-4 pt-0">
+                          <Button className="w-full" asChild>
+                            <a
+                              href={accommodation.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Book Now
+                            </a>
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    ))
+                  ) : (
+                    <Card>
+                      <CardContent className="p-4 flex items-center justify-center">
+                        <p className="text-gray-500">
+                          No accommodations available
                         </p>
                       </CardContent>
-                      <CardFooter className="p-4 pt-0">
-                        <Button className="w-full" asChild>
-                          <a
-                            href={accommodation.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Book Now
-                          </a>
-                        </Button>
-                      </CardFooter>
                     </Card>
-                  ))}
+                  )}
                 </div>
               </TabsContent>
 

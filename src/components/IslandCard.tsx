@@ -45,12 +45,12 @@ const IslandCard: React.FC<IslandCardProps> = ({
         <div className="absolute bottom-3 left-3 flex gap-2">
           {renderBudgetBadge(island.attributes.budget)}
           {island.attributes.familyFriendly && (
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+            <Badge variant="secondary" className="bg-sky-100 text-island-blue">
               <Users className="h-3 w-3 mr-1" /> Family
             </Badge>
           )}
           {island.attributes.nature && (
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
+            <Badge variant="secondary" className="bg-teal-100 text-island-teal">
               <Waves className="h-3 w-3 mr-1" /> Nature
             </Badge>
           )}
@@ -105,7 +105,7 @@ const IslandCard: React.FC<IslandCardProps> = ({
           <Plus className="h-4 w-4 mr-1" /> Compare
         </Button>
         <Button
-          className="flex-1 bg-blue-600 hover:bg-blue-700"
+          className="flex-1 bg-island-blue hover:bg-island-teal transition-colors duration-300"
           onClick={() => onViewDetails(island)}
         >
           View Details
@@ -134,7 +134,7 @@ const AttributeDisplay: React.FC<AttributeDisplayProps> = ({
         {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
-            className={`w-1.5 h-4 mx-0.5 rounded-sm ${i < value ? "bg-blue-500" : "bg-gray-200"}`}
+            className={`w-1.5 h-4 mx-0.5 rounded-sm ${i < value ? "bg-island-blue" : "bg-gray-200"}`}
           />
         ))}
       </div>
@@ -148,7 +148,7 @@ const renderBudgetBadge = (budget: "low" | "medium" | "high") => {
       return (
         <Badge
           variant="outline"
-          className="bg-green-100 text-green-800 border-green-200"
+          className="bg-teal-100 text-island-teal border-teal-200"
         >
           $ Budget
         </Badge>
@@ -157,16 +157,16 @@ const renderBudgetBadge = (budget: "low" | "medium" | "high") => {
       return (
         <Badge
           variant="outline"
-          className="bg-yellow-100 text-yellow-800 border-yellow-200"
+          className="bg-sky-100 text-island-blue border-sky-200"
         >
-          $$ Moderate
+          $ Moderate
         </Badge>
       );
     case "high":
       return (
         <Badge
           variant="outline"
-          className="bg-purple-100 text-purple-800 border-purple-200"
+          className="bg-violet-100 text-island-violet border-violet-200"
         >
           $$$ Luxury
         </Badge>
